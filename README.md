@@ -20,13 +20,9 @@ php http.php
 
 ## Usage
 
-POST("/")
+POST http://127.0.0.1:9501
 
-### send text message
-
-example: http://127.0.0.1:9501/
 json payload:
-
 ```json
 {
   "url": "https://www.youtube.com/watch?v=PP1xn5wHtxE"
