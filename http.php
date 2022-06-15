@@ -10,16 +10,21 @@ $http->on('Request', function ($request, $response) {
         return;
     }
     $body = json_decode($request->getContent());
-    $embed = new Embed();
-    $info = $embed->get($body->url);
+    try{
+      $embed = new Embed();
+      $info = $embed->get($body->url);
+      $resp = array(
+                "title" => $info->title,
+                "description" => $info->description,
+                "url" => (string)$info->url,
+                "image" => (string)$info->image
+              );
+      var_dump($resp);
+    } catch (Exception $exception) {
+      var_dump($exception);
+      $resp = NULL;
+    }
     $response->header('Content-Type', 'application/json; charset=utf-8');
-    $resp = array(
-              "title" => $info->title,
-              "description" => $info->description,
-              "url" => (string)$info->url,
-              "image" => (string)$info->image
-            );
-    var_dump($resp);
     $response->end(json_encode($resp, JSON_FORCE_OBJECT));
 });
 $http->start();
