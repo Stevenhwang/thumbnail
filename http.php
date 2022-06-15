@@ -1,13 +1,26 @@
 <?php
+require  'vendor/autoload.php';
+
+use Embed\Embed;
+
 $http = new Swoole\Http\Server('0.0.0.0', 9501);
 $http->on('Request', function ($request, $response) {
     if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
         $response->end();
         return;
     }
-    var_dump($request->get, $request->post);
-    $response->header('Content-Type', 'text/html; charset=utf-8');
-    $response->end('<h1>Hello Swoole. #' . rand(1000, 9999) . '</h1>');
+    $body = json_decode($request->getContent());
+    $embed = new Embed();
+    $info = $embed->get($body->url);
+    $response->header('Content-Type', 'application/json; charset=utf-8');
+    $resp = array(
+              "title" => $info->title,
+              "description" => $info->description,
+              "url" => (string)$info->url,
+              "image" => (string)$info->image
+            );
+    var_dump($resp);
+    $response->end(json_encode($resp, JSON_FORCE_OBJECT));
 });
 $http->start();
 ?>
